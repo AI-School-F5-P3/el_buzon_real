@@ -4,6 +4,7 @@ import pymongo
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import datetime
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -28,7 +29,7 @@ def generate_chat_response(message, character):
     instruction = mago_instruccion.get(character, "Habla como un personaje mágico.")
 
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o-turbo",
         messages=[
             {"role": "system", "content": instruction},
             {"role": "user", "content": message}
@@ -36,28 +37,37 @@ def generate_chat_response(message, character):
     )
     return response['choices'][0]['message']['content']
 
-def save_gift_list_to_mongodb(gift_list, child_name):
+def save_gift_list_to_mongodb(gift_list, parent_email):
 
     client = pymongo.MongoClient(os.getenv("MONGODB_URI"))
     db = client["reyes_magos"]
     collection = db["gift_lists"]
 
     document = {
-        "child_name": child_name,
-        "gifts": gift_list
+        "parent_email": parent_email,
+        "gifts": gift_list,
+        "timestamp": datetime.utcnow()  
     }
     collection.insert_one(document)
+    print(f"Gift list saved to database for {parent_email}.")
 
-def send_email_to_parents(child_name, gift_list, parent_email):
-
+def send_email_to_parents(gift_list, parent_email):
     sender_email = os.getenv("EMAIL_ADDRESS")
-    sender_password = os.getenv("EMAIL_PASSWORD")
 
-    if not sender_email or not sender_password:
-        raise ValueError("Email credentials not found. Please set EMAIL_ADDRESS and EMAIL_PASSWORD environment variables.")
+    if not sender_email:
+        raise ValueError("Sender email credentials are missing. Check EMAIL_ADDRESS in your .env file.")
 
-    subject = f"Lista de Regalos de {child_name}"
-    body = f"Queridos padres de {child_name},\n\nLa lista de regalos que ha pedido es:\n\n" + "\n".join(gift_list) + "\n\n¡Felices fiestas!\n\nLos Reyes Magos."
+    subject = f"Lista de Regalos para {parent_email}"
+    body = f"""Queridos padres,
+
+La lista de regalos que ha pedido su hijo/a es:
+
+{chr(10).join(gift_list)}
+
+¡Felices fiestas!
+
+Los Reyes Magos.
+"""
 
     msg = MIMEMultipart()
     msg['From'] = sender_email
@@ -69,9 +79,9 @@ def send_email_to_parents(child_name, gift_list, parent_email):
     try:
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
-        server.login(sender_email, sender_password)
+        server.login(sender_email)
         server.sendmail(sender_email, parent_email, msg.as_string())
         server.quit()
-        print("Email sent successfully.")
+        print(f"Email sent successfully to {parent_email}.")
     except Exception as e:
-        print("Error sending email:", e)
+        print(f"Error sending email to {parent_email}: {e}")
