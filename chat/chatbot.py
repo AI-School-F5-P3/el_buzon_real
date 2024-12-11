@@ -1,20 +1,22 @@
 import os
-import openai
+from openai import AzureOpenAI
 import pymongo
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import datetime
 from dotenv import load_dotenv
+import streamlit as st
 
 load_dotenv()
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
-if not openai.api_key:
-    raise ValueError("OpenAI API key not found. Please set the OPENAI_API_KEY environment variable.")
+client = AzureOpenAI(
+    azure_endpoint=os.getenv("OPENAI_API_BASE"),
+    api_key=os.getenv("OPENAI_API_KEY"),
+    api_version="2024-10-21"
+)
 
 def create_chatbot_instructions():
-
     mago_instruccion = {
         "paje real": "Habla como un paje real alegre y juguetón. Usa expresiones mágicas y diviértete con los niños antes de invitar a uno de los Reyes Magos a tomar el control de la conversación.",
         "Melchor": "Habla como el sabio Rey Melchor, con una voz amable y sabia. Responde a los deseos del niño de manera cariñosa y reflexiva.",
@@ -24,21 +26,17 @@ def create_chatbot_instructions():
     return mago_instruccion
 
 def generate_chat_response(message, character):
-
     mago_instruccion = create_chatbot_instructions()
     instruction = mago_instruccion.get(character, "Habla como un personaje mágico.")
 
-    response = openai.ChatCompletion.create(
+    response = client.ChatCompletion.create(
         model="gpt-4o-turbo",
-        messages=[
-            {"role": "system", "content": instruction},
-            {"role": "user", "content": message}
-        ]
+        messages=[{"role": "system", "content": instruction},
+                    {"role": "user", "content": message}]
     )
     return response['choices'][0]['message']['content']
 
 def save_gift_list_to_mongodb(gift_list, parent_email):
-
     client = pymongo.MongoClient(os.getenv("MONGODB_URI"))
     db = client["reyes_magos"]
     collection = db["gift_lists"]
@@ -46,7 +44,7 @@ def save_gift_list_to_mongodb(gift_list, parent_email):
     document = {
         "parent_email": parent_email,
         "gifts": gift_list,
-        "timestamp": datetime.utcnow()  
+        "timestamp": datetime.datetime.utcnow()
     }
     collection.insert_one(document)
     print(f"Gift list saved to database for {parent_email}.")
@@ -73,13 +71,12 @@ Los Reyes Magos.
     msg['From'] = sender_email
     msg['To'] = parent_email
     msg['Subject'] = subject
-
     msg.attach(MIMEText(body, 'plain'))
 
     try:
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
-        server.login(sender_email)
+        server.login(sender_email, os.getenv("EMAIL_ADRESS"))
         server.sendmail(sender_email, parent_email, msg.as_string())
         server.quit()
         print(f"Email sent successfully to {parent_email}.")
