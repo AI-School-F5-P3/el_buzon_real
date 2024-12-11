@@ -1,7 +1,7 @@
 import streamlit as st
 from config import setup_page_config, apply_styling
 from utils.session import initialize_session_state
-from screens import welcome, chat, letter, confirmation
+from screens import chat_screen, welcome, letter, confirmation
 
 def main():
     setup_page_config()
@@ -12,7 +12,7 @@ def main():
     if st.session_state.current_screen == "welcome":
         welcome.show()
     elif st.session_state.current_screen == "chat":
-        chat.show()
+        chat_screen.show()
     elif st.session_state.current_screen == "letter":
         letter.show()
     elif st.session_state.current_screen == "confirmation":

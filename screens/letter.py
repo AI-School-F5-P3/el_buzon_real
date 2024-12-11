@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-from chatbot import save_gift_list_to_mongodb
+from chat.chatbot import save_gift_list_to_mongodb
 
 def load_css(file_name):
     with open(file_name) as f:
