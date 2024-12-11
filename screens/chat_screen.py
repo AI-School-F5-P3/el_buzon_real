@@ -12,8 +12,10 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 
 def show():
     st.title("Habla con ayudante de los Reyes Mágos🎅")
+    st.title("Habla con ayudante de los Reyes Mágos🎅")
     
     # Campo de entrada para el prompt del usuario
+    user_prompt = st.text_input("Escribe tu mensaje:")
     user_prompt = st.text_input("Escribe tu mensaje:")
     
     # Botón para enviar el prompt
@@ -21,8 +23,10 @@ def show():
         if user_prompt:
             # Crear instrucciones del chatbot
             instructions = create_chatbot_instructions()
+            instructions = create_chatbot_instructions()
             
             # Generar respuesta del chat
+            response = generate_chat_response(instructions, user_prompt)
             response = generate_chat_response(instructions, user_prompt)
             
             # Mostrar la respuesta
