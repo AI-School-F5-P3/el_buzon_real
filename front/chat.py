@@ -1,5 +1,5 @@
 import streamlit as st
-import openai
+from openai import AzureOpenAI
 import os
 from chat.chatbot import create_chatbot_instructions, generate_chat_response, save_gift_list_to_mongodb
 from dotenv import load_dotenv
