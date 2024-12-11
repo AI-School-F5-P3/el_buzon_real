@@ -14,7 +14,7 @@ def show():
     st.title("Tu Carta a los Reyes Magos 👑🎁")
     
     # Placeholder para la generación de la carta
-    st.text_area("Vista previa de tu carta", height=300)
+    carta = st.text_area("Vista previa de tu carta", height=300)
     child_name = st.text_input("Nombre del niño/niña")
 
     col1, col2 = st.columns(2)
@@ -26,8 +26,14 @@ def show():
         if st.button("Envía tu carta"):
             if carta and child_name:
                 gift_list = carta.split('\n')
-                save_gift_list_to_mongodb(gift_list, child_name)
-                st.session_state.current_screen = "confirmation"
-                st.rerun()
+                try:
+                    save_gift_list_to_mongodb(gift_list, child_name)
+                    st.session_state.current_screen = "confirmation"
+                    st.rerun()
+                except Exception as e:
+                    print(f"Error al enviar la carta: {e}")
+                    st.session_state.current_screen = "chat"
+                    st.rerun()
             else:
-                st.error("Por favor, completa todos los campos antes de enviar.")
+                st.session_state.current_screen = "chat"
+                st.rerun()
