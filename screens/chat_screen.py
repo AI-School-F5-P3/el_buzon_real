@@ -1,4 +1,4 @@
-import streamlit as st
+Pajeimport streamlit as st
 import openai
 import os
 from chat.chatbot import create_chatbot_instructions, generate_chat_response
@@ -11,7 +11,7 @@ load_dotenv()
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 def show():
-    st.title("Habla con ayudante de los Reyes Mágos🎅")
+    st.title("Habla con el Paje de los Reyes Magos🎅")
     
     # Campo de entrada para el prompt del usuario
     user_prompt = st.text_input("Escribe tu mensaje:")
@@ -25,7 +25,7 @@ def show():
             # Generar respuesta del chat
             response = generate_chat_response(instructions, user_prompt)
             # Mostrar la respuesta
-            st.subheader("Respuesta de los Reyes Magos:")
+            st.subheader("Respuesta del Paje Real:")
             response_placeholder.write(response)
         else:
             st.warning("Por favor, escribe un mensaje para los Reyes Magos.")
