@@ -15,7 +15,7 @@ def show():
     
     # Campo de entrada para el prompt del usuario
     user_prompt = st.text_input("Escribe tu mensaje:")
-    
+    response_placeholder = st.empty()
     # Botón para enviar el prompt
     if st.button("Enviar"):
         if user_prompt:
@@ -24,13 +24,13 @@ def show():
             
             # Generar respuesta del chat
             response = generate_chat_response(instructions, user_prompt)
-            
             # Mostrar la respuesta
-            st.write("Respuesta del ayudante de Santa:")
-            st.write(response)
+            st.subheader("Respuesta de los Reyes Magos:")
+            response_placeholder.write(response)
         else:
-            st.write("Por favor, escribe un mensaje.")
-    
+            st.warning("Por favor, escribe un mensaje para los Reyes Magos.")
+            user_prompt = st.text_input("Escribe tu mensaje:")
+            response_placeholder.write(response)
     # Botón para cerrar y volver a la página principal
     if st.button("Cerrar y volver a la página principal"):
         st.session_state.current_screen = "welcome"
