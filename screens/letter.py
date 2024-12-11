@@ -17,7 +17,7 @@ def show():
     
     # Placeholder para la generación de la carta
     carta = st.text_area("Vista previa de tu carta", height=300)
-    child_name = st.text_input("Nombre del niño/niña")
+    child_name = st.text_input("Nombre del niñ@")
 
     col1, col2 = st.columns(2)
     with col1:
