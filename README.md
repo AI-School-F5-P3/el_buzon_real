@@ -15,7 +15,7 @@ Esta aplicación simula interacciones con los Reyes Magos (Melchor, Gaspar y Bal
 ### Gestión de Listas de Regalos:
 - La aplicación almacena las listas de regalos de los niños en una base de datos **MongoDB** para su fácil recuperación y organización.
 
-#3## Notificaciones por Correo Electrónico:
+### Notificaciones por Correo Electrónico:
 - Una vez finalizada la lista de regalos, esta se envía por correo electrónico a los padres para informarles de los deseos de sus hijos.
 
 ---
