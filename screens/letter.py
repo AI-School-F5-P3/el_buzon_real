@@ -1,6 +1,7 @@
 import streamlit as st
 import os
-from chat.chatbot import save_gift_list_to_mongodb
+from chatbot import save_gift_list_to_mongodb
+from config import apply_styling
 
 def load_css(file_name):
     with open(file_name) as f:
@@ -8,8 +9,9 @@ def load_css(file_name):
 
 def show():
     # Cargar estilos CSS
-    load_css(os.path.join(os.path.dirname(__file__), '..', 'static', 'style.css'))
-    load_css(os.path.join(os.path.dirname(__file__), '..', 'static', 'creativity-styles.css'))
+    apply_styling()
+    # load_css(os.path.join(os.path.dirname(__file__), '..', 'static', 'style.css'))
+    # load_css(os.path.join(os.path.dirname(__file__), '..', 'static', 'creativity-styles.css'))
     
     st.title("Tu Carta a los Reyes Magos 👑🎁")
     
