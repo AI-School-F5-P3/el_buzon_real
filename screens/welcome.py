@@ -11,20 +11,20 @@ def show():
     ### Bienvenido al taller de los Reyes Magos!
     
     Así es como funciona este taller:
-    1. Escribe un correo electrónico
-    2. Platica con nuestros queridos Reyes Magos y cuéntales tus deseos
+    1. Registra tu dirección de email
+    2. Habla con nuestros queridos Reyes Magos y cuéntales tus deseos
     3. Observa como se genera tu carta!
-    4. FInalmente, enviamos tu carta a los Reyes Magos!
+    4. Para terminar, enviaremos tu carta a los Reyes Magos!
     
-    *Recuerda contarnos como de bien te has portado este año!* ✨
+    *Recuerda contarnos cómo de bien te has portado este año!* ✨
     """)
     
     email = st.text_input("Cuál es tu correo?", key="email_input")
     
-    if st.button("Comenzar la carta!"):
+    if st.button("Comenzar tu carta!"):
         if validate_email(email):
             st.session_state.user_email = email
             st.session_state.current_screen = "chat"
             st.rerun()
         else:
-            st.error("Por favor ingresa un correo válido!")
+            st.error("Por favor, introduce un enail válido!")
